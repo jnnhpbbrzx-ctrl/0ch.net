@@ -1,0 +1,16 @@
+{
+  "name": "0ch-net",
+  "version": "2.1.0",
+  "description": "0ch.net — тёмная соцсеть в стиле 4chan",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  }
+}

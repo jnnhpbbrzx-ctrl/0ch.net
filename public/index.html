@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0ch.net</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%235c4033'/%3E%3Ctext x='16' y='24' text-anchor='middle' font-family='monospace' font-size='22' font-weight='bold' fill='%23e8dcc8'%3E0%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="maintenanceScreen" class="screen hidden mc-maint">
+  <div class="mc-dirt"></div>
+  <div class="mc-overlay"></div>
+  <div class="mc-content">
+    <h1 class="mc-title">ОШИБКА СЕРВЕРА</h1>
+    <div class="mc-box">
+      <p>Сервер временно недоступен.</p>
+      <p>Сейчас происходят<br><span class="mc-hl">технические работы</span>.</p>
+      <p>Попробуйте зайти немного позже.</p>
+      <p class="mc-code">Error: Connection lost</p>
+    </div>
+    <div class="mc-loader-wrap">
+      <div class="mc-loader-label">ПОДКЛЮЧЕНИЕ...</div>
+      <div class="mc-dots" id="mcDots">
+        <div class="mc-dot"></div><div class="mc-dot"></div><div class="mc-dot"></div>
+        <div class="mc-dot"></div><div class="mc-dot"></div><div class="mc-dot"></div>
+        <div class="mc-dot"></div><div class="mc-dot"></div><div class="mc-dot"></div>
+      </div>
+    </div>
+  </div>
+  <audio id="mcAudio" loop preload="auto" playsinline>
+    <source src="/wilted.mp3" type="audio/mpeg">
+  </audio>
+</div>
+
+<div id="authScreen" class="screen">
+  <div class="auth-card">
+    <div class="logo">0ch<span class="accent">.net</span></div>
+    <p class="tagline">анонимный чат · вход по нику</p>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="login">Вход</button>
+      <button class="tab" data-tab="register">Регистрация</button>
+    </div>
+
+    <div id="loginForm" class="auth-form">
+      <input id="loginName" type="text" placeholder="Ник" maxlength="20" autocomplete="username">
+      <input id="loginPass" type="password" placeholder="Пароль" maxlength="64" autocomplete="current-password">
+      <button id="loginBtn" class="primary-btn">Войти</button>
+    </div>
+
+    <div id="registerForm" class="auth-form hidden">
+      <input id="regName" type="text" placeholder="Придумай ник" maxlength="20" autocomplete="username">
+      <input id="regPass" type="password" placeholder="Пароль (мин. 3)" maxlength="64" autocomplete="new-password">
+      <div id="avatarPreview" class="avatar-preview"></div>
+      <details class="owner-toggle">
+        <summary>я владелец</summary>
+        <input id="adminKeyInput" type="password" placeholder="пароль владельца">
+      </details>
+      <button id="regBtn" class="primary-btn">Создать аккаунт</button>
+    </div>
+
+    <p id="authError" class="error"></p>
+    <p class="guest-hint"><a href="#" id="guestLink">Смотреть без регистрации</a></p>
+  </div>
+</div>
+
+<div id="waitScreen" class="screen hidden">
+  <div class="auth-card">
+    <h2>Заявка отправлена</h2>
+    <p>Жди одобрения владельца. Страницу не закрывай.</p>
+    <div class="loader"><span></span><span></span><span></span></div>
+  </div>
+</div>
+
+<div id="deniedScreen" class="screen hidden">
+  <div class="auth-card">
+    <h2>Отказ</h2>
+    <p>Заявку не приняли. Попробуй другое имя.</p>
+    <button class="primary-btn" onclick="location.reload()">Снова</button>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="logo-sm">0ch<span class="accent">.net</span></span>
+      <span class="status-dot" id="statusDot"></span>
+    </div>
+    <div class="topbar-center">
+      <span id="boardTitle">/chat/</span>
+    </div>
+    <div class="topbar-right">
+      <span id="myNick" class="my-nick"></span>
+      <button id="profileBtn" class="icon-btn" title="Профиль">👤</button>
+      <button id="logoutBtn" class="icon-btn" title="Выйти">⎋</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-section">
+        <div class="section-title">Онлайн · <span id="userCount">0</span></div>
+        <ul id="usersList" class="users-list"></ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="section-title">Меню</div>
+        <button class="nav-btn active" data-view="chat">💬 Чат</button>
+        <button class="nav-btn" data-view="dms">✉ ЛС</button>
+      </div>
+      <div class="sidebar-footer">
+        <a href="/admin.html" target="_blank" class="admin-link">Админка</a>
+      </div>
+    </aside>
+
+    <section class="chat-panel" id="chatPanel">
+      <div id="messages" class="messages"></div>
+      <div id="typingIndicator" class="typing"></div>
+      <div id="replyBar" class="reply-bar hidden">
+        <span>Ответ на <strong id="replyPreview"></strong></span>
+        <button id="cancelReply" type="button">×</button>
+      </div>
+      <div id="imagePreviewBar" class="image-preview-bar hidden">
+        <img id="imagePreviewThumb" alt="">
+        <button id="cancelImage" type="button">×</button>
+      </div>
+      <form id="messageForm" class="composer">
+        <label class="attach-btn" title="Фото">
+          📎
+          <input type="file" id="imageInput" accept="image/png,image/jpeg,image/gif,image/webp" hidden>
+        </label>
+        <textarea id="messageInput" placeholder="Сообщение… Enter — отправить, > — гринтекст" rows="2" maxlength="2000"></textarea>
+        <button type="submit" class="send-btn">➤</button>
+      </form>
+      <div id="guestBar" class="guest-bar hidden">
+        <span>Гость. <a href="#" id="goAuth">Войти</a>, чтобы писать.</span>
+      </div>
+    </section>
+
+    <section class="dm-panel hidden" id="dmPanel">
+      <div class="dm-list" id="dmList">
+        <div class="section-title">Диалоги</div>
+        <p class="hint">Кликни пользователя → «Написать»</p>
+        <ul id="dmConversations"></ul>
+      </div>
+      <div class="dm-chat hidden" id="dmChat">
+        <div class="dm-header">
+          <button id="dmBack" class="icon-btn">←</button>
+          <span id="dmWithName"></span>
+        </div>
+        <div id="dmMessages" class="messages"></div>
+        <form id="dmForm" class="composer">
+          <label class="attach-btn" title="Фото">
+            📎
+            <input type="file" id="dmImageInput" accept="image/*" hidden>
+          </label>
+          <textarea id="dmInput" placeholder="Личное сообщение…" rows="2" maxlength="1500"></textarea>
+          <button type="submit" class="send-btn">➤</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="profile-panel hidden" id="profilePanel">
+      <div class="profile-card">
+        <button id="profileClose" class="icon-btn close-btn">×</button>
+        <div class="profile-header">
+          <div id="profileAvatar" class="profile-avatar"></div>
+          <div>
+            <h2 id="profileName"></h2>
+            <p id="profileMeta" class="profile-meta"></p>
+          </div>
+        </div>
+        <div id="profileBio" class="profile-bio"></div>
+        <div id="profileActions" class="profile-actions"></div>
+        <div class="wall-section">
+          <h3>Стена</h3>
+          <div id="wallForm" class="wall-form hidden">
+            <textarea id="wallInput" placeholder="На стену…" maxlength="500" rows="2"></textarea>
+            <button id="wallBtn" class="primary-btn sm">OK</button>
+          </div>
+          <div id="wallPosts" class="wall-posts"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="avatar.js"></script>
+<script src="client.js"></script>
+</body>
+</html>

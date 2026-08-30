@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0ch.net — админка</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body { background: var(--bg); overflow: auto; height: auto; }
+  .admin-wrap { max-width: 720px; margin: 40px auto; padding: 0 20px 60px; }
+  .admin-wrap h1 { font-size: 22px; margin-bottom: 24px; }
+  .panel {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    padding: 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  .panel h2 {
+    margin: 0 0 14px;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: .4px;
+  }
+  .req-row, .user-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--panel);
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+  }
+  .req-row .name, .user-row .name { flex: 1; font-weight: 600; }
+  .req-row button, .user-row button {
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    color: white;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .approve-btn { background: #3fb950; }
+  .deny-btn { background: var(--danger); }
+  .kick-btn { background: #e8a33d; color: #1a1200; }
+  .ban-btn { background: #c41e3a; }
+  .empty-msg { color: var(--text-dim); font-style: italic; font-size: 13px; }
+  #loginBox { max-width: 340px; margin: 100px auto 0; }
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  .toggle-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    font-family: inherit;
+  }
+  .toggle-btn.off { background: #555; }
+</style>
+</head>
+<body>
+
+<div id="loginBox" class="auth-card">
+  <h2>Вход владельца</h2>
+  <input id="passInput" type="password" placeholder="Пароль владельца" style="width:100%;padding:11px;margin:12px 0;border:1px solid var(--border);border-radius:6px;background:var(--panel);color:var(--text);font-family:inherit;">
+  <button id="loginBtn" class="primary-btn">Войти</button>
+  <p id="loginError" class="error"></p>
+</div>
+
+<div id="adminPanel" class="admin-wrap hidden">
+  <h1>Панель 0ch<span class="accent">.net</span></h1>
+
+  <div class="panel">
+    <h2>Сайт</h2>
+    <div class="status-row">
+      <span>Техработы:</span>
+      <strong id="maintStatus">выкл</strong>
+      <button id="toggleMaint" class="toggle-btn">Включить</button>
+    </div>
+    <div class="status-row">
+      <span>Регистрация:</span>
+      <strong id="regModeStatus">—</strong>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Заявки</h2>
+    <div id="pendingList"><p class="empty-msg">Нет</p></div>
+  </div>
+
+  <div class="panel">
+    <h2>Пользователи</h2>
+    <div id="approvedList"><p class="empty-msg">Пусто</p></div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="avatar.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
