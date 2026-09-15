@@ -1,0 +1,28 @@
+{
+  "name": "0ch-net-messenger",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"vite\" \"tsx server/index.ts\"",
+    "build": "tsc -b && vite build",
+    "start": "tsx server/index.ts",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "express": "latest",
+    "framer-motion": "latest",
+    "lucide-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "socket.io": "latest",
+    "socket.io-client": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {
+    "concurrently": "latest",
+    "tsx": "latest",
+    "typescript": "latest"
+  }
+}
